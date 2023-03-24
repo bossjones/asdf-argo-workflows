@@ -141,7 +141,8 @@ install_tool() {
   fi
   if [[ "$downloaded_file_is_not_an_archive" != "true" ]]; then
     log INFO "Extracting archive"
-    tar xpf "$download_target_file" -C "$tmp_download_dir"
+    log DEBUG "gunzip step download_target_file=${download_target_file}, tmp_download_dir=${tmp_download_dir}, binary_name=${binary_name}, platform=${platform}"
+    gunzip -c "$download_target_file" > "$tmp_download_dir/${binary_name}"
   else
     log INFO "Preparing downloaded file"
     cp "$download_target_file" "$tmp_download_dir"
