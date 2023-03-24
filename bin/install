@@ -140,7 +140,9 @@ install_tool() {
   fi
   if [[ "$downloaded_file_is_not_an_archive" != "true" ]]; then
     log INFO "Extracting archive"
-    tar -xzvf "$download_target_file" -C "$tmp_download_dir"
+    pushd "$tmp_download_dir"
+    gunzip "$download_target_file"
+    popd
   else
     log INFO "Preparing downloaded file"
     cp "$download_target_file" "$tmp_download_dir"
