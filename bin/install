@@ -9,7 +9,6 @@ set -o pipefail
 # https://github.com/argoproj/argo-workflows/releases/download/v3.4.5/argo-linux-amd64.gz
 # https://github.com/argoproj/argo-workflows/releases/download/v3.4.5/argo-linux-arm64.gz
 
-
 # https://github.com/derailed/k9s/releases/download/v0.16.1/k9s_Linux_x86_64.gz
 # https://github.com/derailed/k9s/releases/download/v0.16.1/k9s_Darwin_x86_64.gz
 # https://github.com/derailed/k9s/releases/download/v0.16.1/k9s_Darwin_arm64.gz
@@ -132,7 +131,7 @@ install_tool() {
   if [[ "$downloaded_file_is_not_an_archive" != "true" ]]; then
     log INFO "Extracting archive"
     log DEBUG "gunzip step download_target_file=${download_target_file}, tmp_download_dir=${tmp_download_dir}, binary_name=${binary_name}, platform=${platform}"
-    gunzip -c "$download_target_file" > "$tmp_download_dir/${binary_name}"
+    gunzip -c "$download_target_file" >"$tmp_download_dir/${binary_name}"
   else
     log INFO "Preparing downloaded file"
     cp "$download_target_file" "$tmp_download_dir"
@@ -307,7 +306,6 @@ argo_get_download_url() {
 _tmp_download_dir="$(mktemp -d -t 'asdf_XXXXXXXX')"
 trap 'rm -rf "${_tmp_download_dir}"' EXIT
 install_tool "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$_tmp_download_dir" "$g_binary_name" "$g_binary_altname" "$g_downloaded_file_is_not_an_archive"
-
 
 # root@ccff651b97b6 ~/dev
 # ❯ argo version
