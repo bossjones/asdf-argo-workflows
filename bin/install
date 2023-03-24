@@ -33,7 +33,7 @@ readonly g_binary_altname="${NO_BINARY_ALTNAME}"
 #
 # available : __VERSION__/__VERSION_SHORT__/__BINARY_NAME__/__PLATFORM__
 #
-readonly g_filename_template=__BINARY_NAME_____PLATFORM__.gz
+readonly g_filename_template=__BINARY_NAME__-__PLATFORM__.gz
 #
 # available : __GITHUB_COORDINATES__/__VERSION__/__VERSION_SHORT__/__FILENAME__
 #
