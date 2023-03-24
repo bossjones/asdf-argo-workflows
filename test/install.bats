@@ -3,7 +3,7 @@
 @test "list-all does not return v versions" {
   run asdf list all argo-workflows
   [ "$status" -eq 0 ]
-  result="$(echo "$output" | grep -c "v" || true)"
+  result="$(echo "$output" | grep -c "^v" || true)"
   [ "$result" == "0" ]
 }
 
