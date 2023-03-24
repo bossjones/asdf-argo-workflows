@@ -3,16 +3,6 @@
 set -e
 set -o pipefail
 
-# set -euo pipefail
-
-# current_script_path=${BASH_SOURCE[0]}
-# plugin_dir=$(dirname "$(dirname "$current_script_path")")
-
-# # shellcheck source=../lib/utils.bash
-# source "${plugin_dir}/lib/utils.bash"
-
-# install_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
-
 #  https://github.com/derailed/k9s/releases/download/v3.4.5/argo_linux_amd64.gz
 # https://github.com/argoproj/argo-workflows/releases/download/v3.4.5/argo-darwin-amd64.gz
 # https://github.com/argoproj/argo-workflows/releases/download/v3.4.5/argo-darwin-arm64.gz
@@ -317,3 +307,15 @@ argo_get_download_url() {
 _tmp_download_dir="$(mktemp -d -t 'asdf_XXXXXXXX')"
 trap 'rm -rf "${_tmp_download_dir}"' EXIT
 install_tool "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$_tmp_download_dir" "$g_binary_name" "$g_binary_altname" "$g_downloaded_file_is_not_an_archive"
+
+
+# root@ccff651b97b6 ~/dev
+# ❯ argo version
+# argo: v3.4.5
+#   BuildDate: 2023-02-07T13:22:11Z
+#   GitCommit: 1253f443baa8ad1610d2e62ec26ecdc85fe1b837
+#   GitTreeState: clean
+#   GitTag: v3.4.5
+#   GoVersion: go1.18.10
+#   Compiler: gc
+#   Platform: linux/amd64

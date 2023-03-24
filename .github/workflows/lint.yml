@@ -34,3 +34,33 @@ jobs:
       - name: Run shfmt
         run: scripts/shfmt.bash
 
+  # via k9s
+  lint_and_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run the sh-checker
+        uses: luizm/action-sh-checker@v0.5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #SHELLCHECK_OPTS: -e SC1004 # Optional: exclude some shellcheck warnings.
+          SHFMT_OPTS: -i 2 # Optional: pass arguments to shfmt.
+        with:
+          sh_checker_comment: true
+      - name: Install asdf
+        run: |
+          git clone https://github.com/asdf-vm/asdf.git $HOME/asdf
+
+      - name: Install bats
+        run: |
+          sudo apt-get install bats
+          bats --version
+
+      - name: Test plugin with bats
+        run: |
+          . $HOME/asdf/asdf.sh
+          asdf plugin-add argo-workflows $GITHUB_WORKSPACE
+          bats test
+
+
