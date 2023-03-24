@@ -9,6 +9,7 @@ set -o pipefail
 # https://github.com/argoproj/argo-workflows/releases/download/v3.4.5/argo-linux-amd64.gz
 # https://github.com/argoproj/argo-workflows/releases/download/v3.4.5/argo-linux-arm64.gz
 
+
 # https://github.com/derailed/k9s/releases/download/v0.16.1/k9s_Linux_x86_64.gz
 # https://github.com/derailed/k9s/releases/download/v0.16.1/k9s_Darwin_x86_64.gz
 # https://github.com/derailed/k9s/releases/download/v0.16.1/k9s_Darwin_arm64.gz
@@ -48,11 +49,11 @@ function log() {
   line="[$(date '+%F %T')] $level: $*"
   if [ -t 2 ]; then
     case "$level" in
-      INFO) code=36 ;;
-      DEBUG) code=35 ;;
-      WARN) code=33 ;;
-      ERROR) code=31 ;;
-      *) code=37 ;;
+    INFO) code=36 ;;
+    DEBUG) code=35 ;;
+    WARN) code=33 ;;
+    ERROR) code=31 ;;
+    *) code=37 ;;
     esac
     echo -e "\e[${code}m${line} \e[94m(${FUNCNAME[1]})\e[0m"
   else
@@ -62,7 +63,7 @@ function log() {
 
 # from https://stackoverflow.com/questions/4023830/how-to-compare-two-strings-in-dot-separated-version-format-in-bash
 function vercomp() {
-  if [[ $1 == "$2" ]]; then
+  if [[ "$1" == "$2" ]]; then
     return 0
   fi
   local IFS=.
@@ -100,14 +101,14 @@ install_tool() {
   local bin_install_path="$install_path/bin"
   local full_path_to_binary="$bin_install_path/${binary_name}"
   local full_path_to_alt_binary
-  if [[ -n $binary_alt_name || $binary_alt_name == "$NO_BINARY_ALTNAME" ]]; then
+  if [[ -n "$binary_alt_name" || "$binary_alt_name" == "$NO_BINARY_ALTNAME" ]]; then
     full_path_to_alt_binary="$bin_install_path/${binary_alt_name}"
   fi
   local download_url
   local download_target_file
   local download_sub_path_dir
 
-  if [[ $install_type != "version" ]]; then
+  if [[ "$install_type" != "version" ]]; then
     log ERROR "Install of type [$install_type] not supported"
   fi
 
@@ -125,13 +126,13 @@ install_tool() {
 
   log INFO "Cleaning previous binaries if any"
   rm -f "$full_path_to_binary" 2>/dev/null || true
-  if [[ -n $binary_alt_name ]]; then
+  if [[ -n "$binary_alt_name" ]]; then
     rm -f "$full_path_to_alt_binary" 2>/dev/null || true
   fi
-  if [[ $downloaded_file_is_not_an_archive != "true" ]]; then
+  if [[ "$downloaded_file_is_not_an_archive" != "true" ]]; then
     log INFO "Extracting archive"
     log DEBUG "gunzip step download_target_file=${download_target_file}, tmp_download_dir=${tmp_download_dir}, binary_name=${binary_name}, platform=${platform}"
-    gunzip -c "$download_target_file" >"$tmp_download_dir/${binary_name}"
+    gunzip -c "$download_target_file" > "$tmp_download_dir/${binary_name}"
   else
     log INFO "Preparing downloaded file"
     cp "$download_target_file" "$tmp_download_dir"
@@ -139,7 +140,7 @@ install_tool() {
   log INFO "Copying binaries"
   cp "$(get_binary_path_in_archive "${tmp_download_dir}" "${binary_name}" "${version}" "${platform}")" "${full_path_to_binary}"
   chmod +x "${full_path_to_binary}"
-  if [[ -n $binary_alt_name ]]; then
+  if [[ -n "$binary_alt_name" ]]; then
     cp "${full_path_to_binary}" "${full_path_to_alt_binary}"
     chmod +x "${full_path_to_alt_binary}"
   fi
@@ -167,11 +168,11 @@ get_platform() {
   local platform_
   vercomp "$version" "0.27.0"
   case $? in
-    0) op='=' ;;
-    1) op='>' ;;
-    2) op='<' ;;
+  0) op='=' ;;
+  1) op='>' ;;
+  2) op='<' ;;
   esac
-  if [[ $op == '<' ]]; then
+  if [[ "$op" == '<' ]]; then
     platform_="$(get_platform_custom)"
   else
     platform_="$(get_platform_${g_platform_pattern})"
@@ -184,11 +185,11 @@ get_cpu() {
   machine_hardware_name="$(uname -m)"
 
   case "$machine_hardware_name" in
-    'x86_64') local cpu_type="x86_64" ;;
-    'powerpc64le' | 'ppc64le') local cpu_type="ppc64le" ;;
-    'aarch64') local cpu_type="arm64" ;;
-    'armv5l' | 'armv6l' | 'armv7l') local cpu_type="arm" ;;
-    *) local cpu_type="$machine_hardware_name" ;;
+  'x86_64') local cpu_type="x86_64" ;;
+  'powerpc64le' | 'ppc64le') local cpu_type="ppc64le" ;;
+  'aarch64') local cpu_type="arm64" ;;
+  'armv5l' | 'armv6l' | 'armv7l') local cpu_type="arm" ;;
+  *) local cpu_type="$machine_hardware_name" ;;
   esac
 
   echo "$cpu_type"
@@ -265,11 +266,11 @@ argo_get_download_url() {
   # https://github.com/derailed/k9s/releases/download/0.11.1/k9s_0.11.1_Linux_x86_64.gz
   vercomp "$version" "0.14.0"
   case $? in
-    0) op='=' ;;
-    1) op='>' ;;
-    2) op='<' ;;
+  0) op='=' ;;
+  1) op='>' ;;
+  2) op='<' ;;
   esac
-  if [[ $op == '<' ]]; then
+  if [[ "$op" == '<' ]]; then
     filename="$(get_filename_pre_0_14_0 "$version" "$platform" "$binary_name")"
   else
     filename="$(get_filename_post_0_14_0 "$version" "$platform" "$binary_name")"
@@ -277,11 +278,11 @@ argo_get_download_url() {
 
   vercomp "$version" "0.13.0"
   case $? in
-    0) op='=' ;;
-    1) op='>' ;;
-    2) op='<' ;;
+  0) op='=' ;;
+  1) op='>' ;;
+  2) op='<' ;;
   esac
-  if [[ $op == '<' ]]; then
+  if [[ "$op" == '<' ]]; then
     path_version="$version"
   else
     path_version="v$version"
@@ -289,11 +290,11 @@ argo_get_download_url() {
 
   vercomp "$version" "0.24.10"
   case $? in
-    0) op='=' ;;
-    1) op='>' ;;
-    2) op='<' ;;
+  0) op='=' ;;
+  1) op='>' ;;
+  2) op='<' ;;
   esac
-  if [[ $op == '=' ]]; then
+  if [[ "$op" == '=' ]]; then
     filename="$(get_filename_0_24_10 "$version" "$platform" "$binary_name")"
     path_version="v$version"
   else
@@ -306,6 +307,7 @@ argo_get_download_url() {
 _tmp_download_dir="$(mktemp -d -t 'asdf_XXXXXXXX')"
 trap 'rm -rf "${_tmp_download_dir}"' EXIT
 install_tool "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$_tmp_download_dir" "$g_binary_name" "$g_binary_altname" "$g_downloaded_file_is_not_an_archive"
+
 
 # root@ccff651b97b6 ~/dev
 # ❯ argo version
